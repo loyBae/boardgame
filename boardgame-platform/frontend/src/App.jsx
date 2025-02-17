@@ -1,14 +1,18 @@
 // src/App.jsx
-import Login from './components/Login';
-import Register from './components/Register';
+import { Routes, Route } from 'react-router-dom'
+import Login from './pages/Login'
+import Register from './pages/Register'
 
 function App() {
   return (
-    <div>
-      <Login />
-      <Register />
-    </div>
-  );
+    <Routes>
+      {/* 로그인 페이지 */}
+      <Route path="/" element={<Login />} />
+
+      {/* 회원가입 페이지 */}
+      <Route path="/register" element={<Register />} />
+    </Routes>
+  )
 }
 
-export default App;
+export default App
