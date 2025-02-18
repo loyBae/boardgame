@@ -18,6 +18,7 @@ function Login() {
       const data = await res.json()
       if (res.ok) {
         setMsg(`로그인 성공! 토큰: ${data.token}`)
+        setTimeout(() => navigate('/rooms'), 1); // 로그인 성공 시 방 목록 페이지로 이동
         localStorage.setItem('token', data.token)
       } else {
         setMsg(data.error)
