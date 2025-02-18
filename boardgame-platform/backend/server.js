@@ -33,42 +33,47 @@ const pool = new Pool({
 
 // 회원가입 API
 app.post('/api/register', async (req, res) => {
-  const { username, password, name, email, phone, residentNumber, gender } = req.body;
+  const { username, password, nickname, email, gender } = req.body;
+  if (!username || !password || !nickname || !email || !gender) {
+    return res.status(400).json({ error: '모든 필수 항목을 입력해야 합니다.' });
+  }
+
   try {
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(password, salt);
+    const nickCheck = await pool.query('SELECT * FROM users WHERE nickname = $1', [nickname]);
+    if (nickCheck.rows.length > 0) {
+      return res.status(409).json({ error: '이미 사용 중인 닉네임입니다.' });
+    }
     
-    const result = await pool.query(
-      `INSERT INTO users (username, password_hash, name, email, phone, resident_number, gender)
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-      [username, hashedPassword, name, email, phone, residentNumber, gender]
+
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    await pool.query(
+      'INSERT INTO users (nickname, username, password_hash, email, gender, email_verified) VALUES ($1, $2, $3, $4, $5, $6)',
+      [nickname, username, hashedPassword, email, gender, false]
     );
 
     const verificationLink = `http://localhost:5000/api/verify?email=${email}`;
-
     await transporter.sendMail({
-      from: 'qodlsfuf@gmail.com',  // 'gamil.com' 오타 수정
+      from: 'qodlsfuf@gmail.com',
       to: email,
-      subject: '회원가입 이메일 인증',
-      text: `아래 링크를 클릭하여 이메일 인증을 완료하세요: ${verificationLink}`  // `text` 키 누락
+      subject: '이메일 인증',
+      text: `아래 링크를 클릭하여 이메일 인증을 완료하세요: ${verificationLink}`
     });
 
-    res.status(201).json({
-      userId: result.rows[0].id,
-      message: '회원가입 성공! 이메일 인증을 완료해주세요.',
-    });
+    res.status(201).json({ message: '회원가입 성공! 이메일 인증을 완료해주세요.' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: '회원가입 실패' });
   }
 });
-
-
 // 이메일 인증 API
-app.get('/api/verify', (req, res) => {
+app.get('/api/verify', async (req, res) => {
   const { email } = req.query;
-  // DB에서 email 확인 후 상태 업데이트 (DB 로직 추가 필요)
-  res.send('이메일 인증이 완료되었습니다. 이제 로그인 할 수 있습니다.');
+  try {
+    await pool.query('UPDATE users SET email_verified = TRUE WHERE email = $1', [email]);
+    res.send('이메일 인증이 완료되었습니다. 이제 로그인할 수 있습니다.');
+  } catch (error) {
+    res.status(500).send('이메일 인증 실패');
+  }
 });
 
 // 로그인 API
@@ -91,7 +96,10 @@ app.post('/api/login', async (req, res) => {
       return res.status(401).json({ error: '비밀번호가 일치하지 않습니다.' });
     }
 
-    // 3) JWT 발급
+    // 3) 이메일 인증 여부 검증
+    if (!user.email_verified) return res.status(403).json({ error: '이메일 인증이 필요합니다.' });
+
+    // 4) JWT 발급
     const token = jwt.sign(
       { userId: user.id, username: user.username },
       process.env.JWT_SECRET,
@@ -104,6 +112,22 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ error: '로그인 실패' });
   }
 });
+
+// 닉네임 중복 확인 API
+app.get('/api/check-nickname', async (req, res) => {
+  const { nickname } = req.query;
+  try {
+    const result = await pool.query('SELECT * FROM users WHERE nickname = $1', [nickname]);
+    if (result.rows.length > 0) {
+      return res.status(409).json({ error: '이미 사용 중인 닉네임입니다.' });
+    } else {
+      res.status(200).json({ message: '사용 가능한 닉네임입니다.' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: '닉네임 확인 중 오류가 발생했습니다.' });
+  }
+});
+
 
 // 서버 실행
 const PORT = process.env.PORT || 5000;
