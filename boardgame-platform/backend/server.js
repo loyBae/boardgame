@@ -2,12 +2,25 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
+const nodemailer = require('nodemailer');
+const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
+
+// Nodemailer 설정
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'qodlsfuf@gmail.com',
+    pass: 'urnw adzp fwmv ivhv'
+  }
+});
+
 
 // PostgreSQL 연결
 const pool = new Pool({
@@ -20,26 +33,42 @@ const pool = new Pool({
 
 // 회원가입 API
 app.post('/api/register', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, name, email, phone, residentNumber, gender } = req.body;
   try {
-    // 비밀번호 해싱
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
-
-    // DB 저장
+    
     const result = await pool.query(
-      'INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING id',
-      [username, hashedPassword]
+      `INSERT INTO users (username, password_hash, name, email, phone, resident_number, gender)
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+      [username, hashedPassword, name, email, phone, residentNumber, gender]
     );
+
+    const verificationLink = `http://localhost:5000/api/verify?email=${email}`;
+
+    await transporter.sendMail({
+      from: 'qodlsfuf@gmail.com',  // 'gamil.com' 오타 수정
+      to: email,
+      subject: '회원가입 이메일 인증',
+      text: `아래 링크를 클릭하여 이메일 인증을 완료하세요: ${verificationLink}`  // `text` 키 누락
+    });
 
     res.status(201).json({
       userId: result.rows[0].id,
-      message: '회원가입 성공!',
+      message: '회원가입 성공! 이메일 인증을 완료해주세요.',
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: '회원가입 실패' });
   }
+});
+
+
+// 이메일 인증 API
+app.get('/api/verify', (req, res) => {
+  const { email } = req.query;
+  // DB에서 email 확인 후 상태 업데이트 (DB 로직 추가 필요)
+  res.send('이메일 인증이 완료되었습니다. 이제 로그인 할 수 있습니다.');
 });
 
 // 로그인 API
