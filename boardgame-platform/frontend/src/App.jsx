@@ -8,7 +8,7 @@ import CreateRoom from './pages/CreateRoom';
 
 function App() {
   return (
-    // BrowserRouter로 전체를 감싼다
+    
     <>
     
       <Routes>

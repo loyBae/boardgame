@@ -10,7 +10,7 @@ export default function Register() {
         register,
         handleSubmit,
         setValue,
-        FormState: { errors },
+        formState: { errors },
     } = useForm();
 
     // 주민번호 입력시 뒷자리 마스킹
