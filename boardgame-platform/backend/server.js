@@ -31,6 +31,86 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
+// JWT 인증 미들웨어 추가
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // 'Bearer <token>' 형식 처리
+  if (!token) {
+    console.log('🔴 토큰이 없습니다.');
+    return res.status(401).json({ error: '토큰이 필요합니다.' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      console.log('🔴 JWT 검증 실패:', err);
+      return res.status(403).json({ error: '토큰이 유효하지 않습니다.' });
+    }
+    req.user = user;
+    next();
+  });
+};
+
+// 방 만들기
+
+// 방 관리 API 
+
+// 방 생성 API - 생성자 자동 입장.
+app.post('/api/rooms', authenticateToken, async (req, res) => {
+  const { title, game_type, max_players } = req.body;
+  const owner_id = req.user.nickname; // 사용자 닉네임을 owner_id로 사용
+  try {
+    const newRoom = await pool.query('INSERT INTO rooms (title, game_type, max_players, owner_id) VALUES ($1, $2, $3, $4) RETURNING *', [title, game_type, max_players, owner_id]);
+    await pool.query('INSERT INTO users_in_room (room_id, user_id) VALUES ($1, $2)', [newRoom.rows[0].id, owner_id]);
+    res.status(201).json(newRoom.rows[0]);
+  } catch (error) {
+    console.error('방 만들기 오류:', error);
+    res.status(500).json({ error: '방 만들기 실패' });
+  }
+});
+
+// 방 목록 조회 API
+app.get('/api/rooms', async (req, res) => {
+  try {
+      const result = await pool.query('SELECT * FROM rooms ORDER BY created_at DESC');
+      res.status(200).json(result.rows);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: '방 목록 조회 실패' });
+  }
+});
+
+// 방 삭제 API
+app.delete('/api/rooms/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+      await pool.query('DELETE FROM rooms WHERE id = $1', [id]);
+      res.status(200).json({ message: '방 삭제 성공' });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: '방 삭제 실패' });
+  }
+});
+
+//방 나가기 API
+app.post('/api/rooms/:id/leave', authenticateToken, async (req, res) => {
+  const roomId = req.params.id;
+  try {
+    await pool.query('DELETE FROM users_in_room WHERE room_id = $1 AND user_id = $2', [roomId, req.user.username]);
+
+    const result = await pool.query('SELECT COUNT(*) FROM users_in_room WHERE room_id = $1', [roomId]);
+    const count = parseInt(result.rows[0].count);
+
+    if (count === 0) {
+      await pool.query('DELETE FROM rooms WHERE id = $1', [roomId]);
+    }
+
+    res.status(200).json({ message: '방에서 나갔습니다.' });
+  } catch (error) {
+    console.error('방 나가기 오류:', error);
+    res.status(500).json({ error: '방 나가기 실패' });
+  }
+});
+
 // 회원가입 API
 app.post('/api/register', async (req, res) => {
   const { username, password, nickname, email, gender } = req.body;

@@ -16,7 +16,7 @@ export default function Register() {
             return;
         }
         try {
-            const response = await fetch(`http://127.0.0.1:5000/api/check-nickname?nickname=${nickname}`);
+            const response = await fetch(`http://127.0.0.1:5000/api/auth/check-nickname?nickname=${nickname}`);
             const data = await response.json();
             if (response.ok) {
                 setNicknameMsg("사용 가능한 닉네임입니다.");
@@ -37,7 +37,7 @@ export default function Register() {
             return;
         }
         try {
-            const response = await fetch("http://127.0.0.1:5000/api/register", {
+            const response = await fetch("http://127.0.0.1:5000/api/auth/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
@@ -51,7 +51,7 @@ export default function Register() {
             const responseData = await response.json();
             if(response.ok) {
                 setMsg(`회원가입 성공! 이메일 인증 메일이 발송되었습니다.`);
-                setTimeout(() => navigate('/login'), 2000);
+                setTimeout(() => navigate('/auth/login'), 2000);
             } else {
                 setMsg(responseData.error || "회원가입 실패!");
             }
