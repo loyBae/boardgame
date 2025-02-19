@@ -1,28 +1,30 @@
 // App.jsx
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
-import Navbar from './components/Navbar'
+import Navbar from './components/Navbar';
 import Register from './pages/Register';
-import Rooms, { Room } from './pages/Rooms';
-import CreateRoom from './pages/CreateRoom';
-//import GameList from './pages/gameList';
+import Rooms from './pages/Rooms';
+import RoomDetail from './pages/RoomDetail'; // 수정: RoomDetail 추가
+import GameList from './pages/gameList';
+import CreateRoomModal from "./components/CreateRoomModal";
 
 function App() {
   return (
-
-    <>
-
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/rooms" element={<Rooms />} />
-        <Route path="/room/:id" element={<Room />} />
-        <Route path="/create-room" element={<CreateRoom />} />
-        {/* <Route path="/gameList" element={<GameList />} /> */}
-      </Routes>
-    </>
+    
+      <>
+        <Navbar /> {/* 네비게이션 추가 */}
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/rooms" element={<Rooms />} />
+          <Route path="/room/:id" element={<RoomDetail />} /> {/* 수정: `room/:id` → `rooms/:id` */}
+          <Route path="/create-room" element={<CreateRoomModal />} />
+          <Route path="/gameList" element={<GameList />} />
+        </Routes>
+      </>
+   
   );
 }
 
-export default App; 
+export default App;

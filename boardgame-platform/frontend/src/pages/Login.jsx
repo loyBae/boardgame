@@ -18,7 +18,7 @@ function Login() {
       const data = await res.json()
       if (res.ok) {
         setMsg(`로그인 성공! 토큰: ${data.token}`)
-        setTimeout(() => navigate('/rooms'), 1); // 로그인 성공 시 방 목록 페이지로 이동
+        setTimeout(() => navigate('/gameList'), 1); // 로그인 성공 시 게임 목록 페이지로 이동
         localStorage.setItem('token', data.token)
       } else {
         setMsg(data.error)
@@ -37,7 +37,7 @@ function Login() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <h1 className="text-2xl font-bold mb-4">로그인</h1>
-      
+
       <input
         type="text"
         placeholder="아이디"

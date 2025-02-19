@@ -71,11 +71,11 @@ app.post('/api/rooms', authenticateToken, async (req, res) => {
 // 방 목록 조회 API
 app.get('/api/rooms', async (req, res) => {
   try {
-      const result = await pool.query('SELECT * FROM rooms ORDER BY created_at DESC');
-      res.status(200).json(result.rows);
+    const result = await pool.query('SELECT * FROM rooms ORDER BY created_at DESC');
+    res.status(200).json(result.rows);
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: '방 목록 조회 실패' });
+    console.error(error);
+    res.status(500).json({ error: '방 목록 조회 실패' });
   }
 });
 
@@ -83,11 +83,11 @@ app.get('/api/rooms', async (req, res) => {
 app.delete('/api/rooms/:id', async (req, res) => {
   const { id } = req.params;
   try {
-      await pool.query('DELETE FROM rooms WHERE id = $1', [id]);
-      res.status(200).json({ message: '방 삭제 성공' });
+    await pool.query('DELETE FROM rooms WHERE id = $1', [id]);
+    res.status(200).json({ message: '방 삭제 성공' });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: '방 삭제 실패' });
+    console.error(error);
+    res.status(500).json({ error: '방 삭제 실패' });
   }
 });
 
@@ -123,7 +123,7 @@ app.post('/api/register', async (req, res) => {
     if (nickCheck.rows.length > 0) {
       return res.status(409).json({ error: '이미 사용 중인 닉네임입니다.' });
     }
-    
+
 
     const hashedPassword = bcrypt.hashSync(password, 10);
     await pool.query(
@@ -207,6 +207,9 @@ app.get('/api/check-nickname', async (req, res) => {
     res.status(500).json({ error: '닉네임 확인 중 오류가 발생했습니다.' });
   }
 });
+
+// 로그인시 닉네임 불러오기 APIapp.get('/api/')
+
 
 
 // 서버 실행

@@ -7,7 +7,6 @@ function Navbar() {
       <Link to="/">로그인</Link> |{' '}
       <Link to="/register">회원가입</Link> |{' '}
       <Link to="/rooms">게임방 목록</Link> |{' '}
-      <Link to="/create-room">게임방 생성</Link>
     </nav>
   )
 }

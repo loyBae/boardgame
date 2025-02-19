@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 
 export default function Register() {
     const [msg, setMsg] = useState("");
-    const [nicknameMsg, setNicknameMsg] = useState(""); 
+    const [nicknameMsg, setNicknameMsg] = useState("");
     const [NicknameChecked, setNicknameChecked] = useState(""); // 닉네임 중복 확인 여부
     const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors }, watch } = useForm();
@@ -49,7 +49,7 @@ export default function Register() {
             }
 
             const responseData = await response.json();
-            if(response.ok) {
+            if (response.ok) {
                 setMsg(`회원가입 성공! 이메일 인증 메일이 발송되었습니다.`);
                 setTimeout(() => navigate('/auth/login'), 2000);
             } else {
@@ -69,7 +69,7 @@ export default function Register() {
         <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg">
             <h2 className="text-2xl font-bold mb-4">회원가입</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-                <input {...register("username", {required: "아이디를 입력하세요"})} placeholder="아이디" className="p-2 border rounded" />
+                <input {...register("username", { required: "아이디를 입력하세요" })} placeholder="아이디" className="p-2 border rounded" />
                 {errors.username && <p className="text-red-500">{errors.username.message}</p>}
                 <input {...register("password", { required: "비밀번호를 입력하세요." })} type="password" placeholder="비밀번호" className="p-2 border rounded" />
                 {errors.password && <p className="text-red-500">{errors.password.message}</p>}
@@ -86,7 +86,10 @@ export default function Register() {
                     <option value="여">여</option>
                 </select>
                 {errors.gender && <p className="text-red-500">{errors.gender.message}</p>}
-                <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">가입하기</button>
+                <div className="flex justify-center space-x-4">
+                    <button type="submit" className="bg-blue-500 text-white w-auto px-4 py-2 rounded hover:bg-blue-600">가입하기</button>
+                    <button type="button" onClick={() => navigate("/login")} className="bg-yellow-500 text-white w-auto px-4 py-2 rounded hover:bg-blue-600">취소</button>
+                </div>
             </form>
             {msg && <p className="mt-4 text-red-500">{msg}</p>}
         </div>
