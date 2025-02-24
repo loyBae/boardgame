@@ -7,6 +7,7 @@ import Rooms from './pages/Rooms';
 import RoomDetail from './pages/RoomDetail'; // 수정: RoomDetail 추가
 import GameList from './pages/gameList';
 import CreateRoomModal from "./components/CreateRoomModal";
+import GameListModal from './pages/gameListModal';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/room/:id" element={<RoomDetail />} /> {/* 수정: `room/:id` → `rooms/:id` */}
           <Route path="/create-room" element={<CreateRoomModal />} />
           <Route path="/gameList" element={<GameList />} />
+          <Route path="/gameListModal" element={<GameListModal />} />
         </Routes>
       </>
    
