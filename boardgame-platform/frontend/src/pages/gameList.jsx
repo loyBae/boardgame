@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form"; // 유효성 검사를 쉽게 할 수 있는 , 성능 우수하고 확장 가능한 form 제공 라이브러리
 import GameListModal from './gameListModal';
 
+const defaultImage = "../images/hodon.png";
+
 const games = [
     {
         id: 1,
