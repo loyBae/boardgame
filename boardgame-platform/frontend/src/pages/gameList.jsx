@@ -10,14 +10,14 @@ const games = [
         title: "루미큐브",
         description: "전략적인 숫자 타일 게임",
         level: "중급",
-        image: "http://via.placeholder.com/150",
+        image: "",
     },
     {
         id: 2,
         title: "체스",
         description: "고전적인 숫자 타일 게임",
         level: "고급",
-        image: "http://via.placeholder.com/150",
+        image: "",
     },
 ];
 
@@ -51,7 +51,7 @@ export default function gameList() {
                         className='min-w-[200px] w-48 bg-gray-900 p-3 rounded-lg shadow-lg'
                         onClick={() => handleGameClick(game)} // 게임 카드 클릭시 모달 열기
                         >
-                        <img src={game.image} alt={game.title} className='w-full h-32 object-cover rounded-lg' />
+                        <img src={game.image } alt={game.title} className='w-full h-32 object-cover rounded-lg' />
                         <h3 className='text-lg font-semibold mt-2'>{game.title}</h3>
                         <p className='text-gray-400 text-sm'>{game.description}</p>
                         <p className='text-gray-500 text-xs mt-1'>{game.level}</p>
