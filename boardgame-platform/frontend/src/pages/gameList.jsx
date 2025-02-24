@@ -8,28 +8,36 @@ const games = [
     {
         id: 1,
         title: "루미큐브",
-        description: "",
-        level: "",
-        image: "",
+        description: "전략적인 숫자 타일 게임",
+        level: "중급",
+        image: "http://via.placeholder.com/150",
     },
     {
         id: 2,
         title: "체스",
-        description: "",
-        level: "",
-        image: "",
+        description: "고전적인 숫자 타일 게임",
+        level: "고급",
+        image: "http://via.placeholder.com/150",
     },
 ];
 
-const handleGameSelect = (game) => {
-    console.log('선택된 게임: ', game);
-    // 이후 게임 상세 정보 및 생성 화면으로 전환하는 로직 추가
-}
+
 
 
 export default function gameList() {
-    // 모달 열림 상태 관리 추가
-    const [isModalOpen, setModalOpen ] = useState(false);
+    // 추가 : 모달 열림 상태 관리
+    const [isModalOpen, setModalOpen] = useState(false);
+    // 추가 : 선택된 게임 정보 상태 관리
+    const [selectedGame, setSelectedGame] = useState(null);
+
+    // 게임 클릭 시 모달을 열고 해당 게임 정보를 설정
+    const handleGameSelect = (game) => {
+        setSelectedGame(game);
+        setModalOpen(true);
+        //console.log('선택된 게임: ', game);
+        // 이후 게임 상세 정보 및 생성 화면으로 전환하는 로직 추가
+    }
+
 
     return (
         <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100'>
@@ -38,7 +46,11 @@ export default function gameList() {
             </nav>
             <div className='flex overflow-x-auto space-x-4 scrollbar-hide'>
                 {games.map((game) => (
-                    <div key={game.id} className='min-w-[200px] w-48 bg-gray-900 p-3 rounded-lg shadow-lg'>
+                    <div 
+                        key={game.id} 
+                        className='min-w-[200px] w-48 bg-gray-900 p-3 rounded-lg shadow-lg'
+                        onClick={() => handleGameClick(game)} // 게임 카드 클릭시 모달 열기
+                        >
                         <img src={game.image} alt={game.title} className='w-full h-32 object-cover rounded-lg' />
                         <h3 className='text-lg font-semibold mt-2'>{game.title}</h3>
                         <p className='text-gray-400 text-sm'>{game.description}</p>
@@ -46,19 +58,15 @@ export default function gameList() {
                     </div>
                 ))}
             </div>
-            <div className='mt-4'>
-                <button 
-                onClick={() => setModalOpen(true)}
-                className='bg-blue-500 text-white px-4 py-2 rounded'
-                >게임 목록 보기</button>
+
+               {/* 모달 컴포넌트 추가*/}
                 <GameListModal
                     isOpen={isModalOpen}
                     onClose={() => setModalOpen(false)}
-                    games={games}
-                    onSelectGame={handleGameSelect}
-                ></GameListModal> 
+                    game={selectedGame} // 선택된 게임 전달
+                />
             </div>
-        </div>
+        
     );
 
 }
