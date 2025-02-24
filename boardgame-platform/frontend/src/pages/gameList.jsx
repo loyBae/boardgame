@@ -31,10 +31,10 @@ export default function gameList() {
     const [selectedGame, setSelectedGame] = useState(null);
 
     // 게임 클릭 시 모달을 열고 해당 게임 정보를 설정
-    const handleGameSelect = (game) => {
+    const handleGameClick = (game) => {
+        console.log('선택된 게임: ', game); //디버깅용
         setSelectedGame(game);
         setModalOpen(true);
-        //console.log('선택된 게임: ', game);
         // 이후 게임 상세 정보 및 생성 화면으로 전환하는 로직 추가
     }
 
