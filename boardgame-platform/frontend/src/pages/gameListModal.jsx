@@ -1,4 +1,6 @@
 import React from 'react';
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const GameListModal = ({ isOpen, onClose, games, onSelectGame }) => {
     if (!isOpen) return null; // 모달이 열리지 않았으면 랜더링하지 않음

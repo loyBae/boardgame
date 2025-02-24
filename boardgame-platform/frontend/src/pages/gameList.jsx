@@ -28,12 +28,13 @@ const handleGameSelect = (game) => {
 
 
 export default function gameList() {
+    // 모달 열림 상태 관리 추가
+    const [isModalOpen, setModalOpen ] = useState(false);
 
     return (
         <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100'>
             <nav className='text-white px-6 py-3 flex justify-between items-start w-full'>
                 <h2 className='text-xl text-black'>보드게임</h2>
-                <span className='text-xl text-black'>"호돈신님"</span>
             </nav>
             <div className='flex overflow-x-auto space-x-4 scrollbar-hide'>
                 {games.map((game) => (
