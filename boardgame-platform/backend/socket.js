@@ -9,7 +9,7 @@ function setupSocket(server) {
     // 새로운 Socket.IO 서버 생성
     const io = new Server(server, {
         cors: {
-            origin: "http://localhost:5173", // 프론트엔드 도메인 허용 (CORS 설정)
+            origin: ["http://localhost:5173", "http://203.236.49.148:5173"],// 프론트엔드 도메인 허용 (CORS 설정)
             methods: ["GET", "POST"]
         }
     });

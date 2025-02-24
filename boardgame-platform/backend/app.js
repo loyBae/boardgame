@@ -13,7 +13,11 @@ require('dotenv').config();
 
 const app = express();
 //app.use(cors());
-app.use(cors({ origin: '*' }))
+app.use(cors({
+  origin: ["http://203.236.49.148:5173", "http://localhost:5173"], // 허용할 프론트엔드 주소
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true // 쿠키/세션을 사용할 경우 필요
+}));
 app.use(bodyParser.json());
 
 // 라우트 연결

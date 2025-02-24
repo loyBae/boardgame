@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 export default function CreateRoomModal({ onClose }) {
     const [selectedGame, setSelectedGame] = useState('');
     const [form, setForm] = useState({ title: '', maxPlayers: 4, password: '' });
@@ -22,7 +24,7 @@ export default function CreateRoomModal({ onClose }) {
         console.log("📡 방 생성 요청:", JSON.stringify({ ...form, game_type: selectedGame }));
 
         try {
-            const res = await fetch('http://127.0.0.1:5000/api/rooms', {
+            const res = await fetch(`${BASE_URL}/api/rooms`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

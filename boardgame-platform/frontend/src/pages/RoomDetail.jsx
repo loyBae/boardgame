@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 // 📡 Socket.IO 서버에 연결 (백엔드 주소)
-const socket = io("http://localhost:5000");
+const socket = io(`${BASE_URL}`);
 
 export default function RoomDetail() {
     const { id: roomId } = useParams();
@@ -17,7 +19,7 @@ export default function RoomDetail() {
 
     useEffect(() => {
         console.log(`🔍 방 정보 요청: /api/rooms/${roomId}`);
-        fetch(`http://127.0.0.1:5000/api/rooms/${roomId}`)
+        fetch(`${BASE_URL}/api/rooms/${roomId}`)
             .then(res => res.json())
             .then(data => {
                 if (data.error) {
@@ -59,7 +61,7 @@ export default function RoomDetail() {
     const leaveRoom = async () => {
         try {
             console.log(`🚪 방 나가기 요청: /api/rooms/${roomId}/leave`);
-            const res = await fetch(`http://127.0.0.1:5000/api/room/${roomId}/leave`, {
+            const res = await fetch(`${BASE_URL}/api/room/${roomId}/leave`, {
                 method: "POST",
                 headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
             });

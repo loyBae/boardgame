@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 export default function Register() {
     const [msg, setMsg] = useState("");
     const [nicknameMsg, setNicknameMsg] = useState("");
@@ -16,7 +18,7 @@ export default function Register() {
             return;
         }
         try {
-            const response = await fetch(`http://127.0.0.1:5000/api/auth/check-nickname?nickname=${nickname}`);
+            const response = await fetch(`${BASE_URL}/api/auth/check-nickname?nickname=${nickname}`);
             const data = await response.json();
             if (response.ok) {
                 setNicknameMsg("사용 가능한 닉네임입니다.");
@@ -37,7 +39,7 @@ export default function Register() {
             return;
         }
         try {
-            const response = await fetch("http://127.0.0.1:5000/api/auth/register", {
+            const response = await fetch(`${BASE_URL}/api/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),

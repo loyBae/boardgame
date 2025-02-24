@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import CreateRoomModal from '../components/CreateRoomModal';
 import { useNavigate, useParams } from 'react-router-dom';
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 function Rooms() {
   const [rooms, setRooms] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -12,7 +14,7 @@ function Rooms() {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const res = await fetch('http://127.0.0.1:5000/api/rooms');
+        const res = await fetch(`${BASE_URL}/api/rooms`);
         const data = await res.json();
         setRooms(data);
       } catch (error) {
@@ -52,7 +54,7 @@ export function Room() {
 
   const leaveRoom = async () => {
     try {
-      await fetch(`http://127.0.0.1:5000/api/rooms/${roomId}/leave`, {
+      await fetch(`${BASE_URL}/api/rooms/${roomId}/leave`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
