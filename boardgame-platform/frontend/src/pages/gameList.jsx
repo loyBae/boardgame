@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form"; // 유효성 검사를 쉽게 할 수 있는 , 성능 우수하고 확장 가능한 form 제공 라이브러리
+import GameListModal from './gameListModal';
 
 const games = [
     {
@@ -18,7 +19,13 @@ const games = [
         level: "",
         image: "",
     },
-]
+];
+
+const handleGameSelect = (game) => {
+    console.log('선택된 게임: ', game);
+    // 이후 게임 상세 정보 및 생성 화면으로 전환하는 로직 추가
+}
+
 
 export default function gameList() {
 
@@ -37,6 +44,18 @@ export default function gameList() {
                         <p className='text-gray-500 text-xs mt-1'>{game.level}</p>
                     </div>
                 ))}
+            </div>
+            <div className='mt-4'>
+                <button 
+                onClick={() => setModalOpen(true)}
+                className='bg-blue-500 text-white px-4 py-2 rounded'
+                >게임 목록 보기</button>
+                <GameListModal
+                    isOpen={isModalOpen}
+                    onClose={() => setModalOpen(false)}
+                    games={games}
+                    onSelectGame={handleGameSelect}
+                ></GameListModal> 
             </div>
         </div>
     );
